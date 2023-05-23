@@ -6,7 +6,7 @@ const {
   getPromtsBYId,
   postPromts,
   updateThePrompts,
-  deleteThePrompts,
+  deleteThePrompt,
 } = require("../controller/prompt");
 
 
@@ -25,7 +25,7 @@ router.post("/",postPromts);
 router.patch("/:id",updateThePrompts);
 
 //delete by id
-router.delete("/:id",deleteThePrompts);
+router.delete("/:id",deleteThePrompt);
 
 module.exports={
     router

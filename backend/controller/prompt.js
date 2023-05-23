@@ -22,6 +22,7 @@ data:prompts
  const getPromtsBYId=async(req,res)=>{
     try{
     const {id}=req.params;
+    console.log(id)
 if(mongoose.Types.ObjectId.isValid(id)){
     const prompt=promptDB.findById(id)
     res.status(200).json({
@@ -100,7 +101,27 @@ if(!prompt){
 
  const updateThePrompts = async(req, res) => {
 try{
+const {id}=req.body;
+if(!mongoose.Types.ObjectId.isValid(id)){
+       res.status(400).json({
+         status: "unsccess",
+         data: "there is no such data",
+       });
+}
+const updatePrompt=await promptDB.findByIdAndUpdate({_id:id})
+if(!updatePrompt){
+   
+      res.status(400).json({
+        status: "unsccess",
+        data: "there is no such data",
+      });
     
+}
+}catch(err){
+   res.status(400).json({
+     status: "unsccess",
+     data: err,
+   });
 }
  };
 
