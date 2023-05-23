@@ -1,23 +1,108 @@
+const mongoose=require('mongoose')
+const promptDB=require('../model/prompt')
 
- const getAllThePrompts=(req,res)=>{
 
+ const getAllThePrompts=async(req,res)=>{
+    try{
+ const prompts=await promptDB.find().sort({createdAt:-1})
+res.status(200).json(
+    {
+status:"success",
+data:prompts
+    }
+)
+    }catch( err ){
+        res.status(400).json({
+            status:"unsuccess",
+            err
+        })
+    }
 }
 
- const getPromtsBYId=(req,res)=>{
-
+ const getPromtsBYId=async(req,res)=>{
+    try{
+    const {id}=req.params;
+if(mongoose.Types.ObjectId.isValid(id)){
+    const prompt=promptDB.findById(id)
+    res.status(200).json({
+        status:"success",
+        data:prompt
+    })
+   
+}
+else{
+    res.status(400).json({
+        status:"unsuccess",
+        data:"sorry something went wrong"
+    })
+}
+    }catch( err ){
+        res.status(400).json({
+            status:"unsuccess",
+            data:err
+        })
+    }
 }
 
- const postPromts=(req,res)=>{
-
+ const postPromts=async(req,res)=>{
+try{
+    const { name, title, prompt, rating, additionalUrl 
+    
+    } = req.body;
+const createPrompt=await promptDB.create(
+    {
+name,
+title,
+prompt,
+rating,
+additionalUrl
+    }
+)
+res.status(201).json({
+    status:"success",
+    data:createPrompt
+})
+}catch(err){
+       res.status(400).json({
+         status: "unsuccess",
+         data: err,
+       }); 
+}
 }
 
- const updateThePrompts=(req,res)=>{
+ const deleteThePrompt = async (req, res) => {
+   try {
+     const { id } = req.params;
+     if (!mongoose.Types.ObjectId.isValid(id)) {
+      return  res.status(404).json({
+        status:"success",
+      data: "no such workout",
+    });
+     }
 
+const prompt=await promptDB.findByIdAndDelete({_id:id})
+
+if(!prompt){
+    res.status(400).json(
+        {
+            status:"unsccess",
+            data:"there is no such data"
+        }
+    )
 }
+   } catch (err) {
+        res.status(400).json({
+          status: "unsccess",
+          data: err,
+        });
+   }
+ };
 
- const deleteThePrompts=(req,res)=>{
+ const updateThePrompts = async(req, res) => {
+try{
     
 }
+ };
 
 
 module.exports={
@@ -25,5 +110,5 @@ module.exports={
     getPromtsBYId,
     postPromts,
     updateThePrompts,
-    deleteThePrompts
+    deleteThePrompt
 }
