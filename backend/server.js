@@ -1,42 +1,30 @@
-const express=require('express');
+const express = require('express');
+const mongoose=require('mongoose')
+const {router} = require('./routes/prompt')
+const port=5001;
+require('dotenv').config()
 
-const port=5000;
-
-const app=express();
+const app = express();
 
 app.use(express.json())
 
-app.get('/',(req,res)=>{
-res.status(200).json({
-    status:"suucces"
-})
-})
-
-app.post('/',(req,res)=>{
-res.status(200).json({
-  status: "suucces",
-});
+app.use((req, res, next) => {
+    console.log(
+        `method:${req.method} 
+         url:${req.url}       
+    `)
+    next()
 })
 
-app.get('/:id',(req,res)=>{
-res.status(200).json({
-  status: "suucces",
-});
-})
+app.use('/api/prompt', router)
 
-app.patch('/:id',(req,res)=>{
-res.status(200).json({
-  status: "suucces",
-});
-})
-
-app.delete('/:id',(req,res)=>{
-res.status(200).json({
-  status: "suucces",
-});
-})
-
-
-app.listen(port,()=>{
-    console.log("server started listening reuest at port 5000")
-})
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(
+    app.listen(process.env.PORT || port, () => {
+      console.log(
+        `db connected server listening at port ${process.env.PORT || port}`
+      );
+    })
+  )
+  .catch((err) => console.log(err));
